@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 var router = express.Router();
 const jwt = require("jsonwebtoken");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
+const svgCaptcha = require("svg-captcha");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -76,13 +77,16 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-// 获取用户列表
-router.get("/list", async (req, res, next) => {
-  const user = await User.find();
-  res.send({
-    code: 200,
-    msg: "获取成功",
-    data: user,
+// 验证码验证
+router.get("/getInfo", async (req, res, next) => {
+  // 下面这行代码是随机生成验证码图片和文本并返回给客户端
+  const img = svgCaptcha.create({
+    size: 6, // 验证码长度
+    ignoreChars: "0o1i", // 验证码字符中排除 0o1i
+    color: true, // 验证码是否有彩色
+    noise: 1, //干扰线
+    background: "#666", // 背景颜色
   });
+  res.send(img);
 });
 module.exports = router;
