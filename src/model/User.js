@@ -1,6 +1,7 @@
 // 引入mongodb
 const mongoose = require("../db/mongodb");
 const bcrypt = require("bcrypt");
+var salt = bcrypt.genSaltSync(10);
 // 建立用户表
 const UserSchema = new mongoose.Schema({
   username: {
@@ -10,7 +11,7 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     set(val) {
-      return bcrypt.hashSync(val, 10);
+      return bcrypt.hashSync(val, salt);
     },
     select: false,
   },

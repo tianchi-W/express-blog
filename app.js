@@ -7,14 +7,17 @@ var logger = require("morgan");
 var indexRouter = require("./src/routes/index");
 var usersRouter = require("./src/routes/users");
 var ArticleRouter = require("./src/routes/article");
-var resourceMiddleware = require("./src/middleware/resource");
+const cors = require("cors");
+const auth = require("./src/middleware/auth");
+
+// ​
 
 var app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
-
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,9 +26,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/article", ArticleRouter);
+app.use("/article", auth, ArticleRouter);
 
-// catch 404 and forward to error handler
+// catch 404 and forward to error handlerauth
 app.use(function (req, res, next) {
   next(createError(404));
 });
