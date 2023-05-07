@@ -9,7 +9,7 @@ var usersRouter = require("./src/routes/users");
 var ArticleRouter = require("./src/routes/article");
 
 const cors = require("cors");
-const auth = require("./src/middleware/auth");
+// const auth = require("./src/middleware/auth");
 
 // ​
 
@@ -44,7 +44,7 @@ app.all("*", function (req, res, next) {
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/article", auth, ArticleRouter);
+app.use("/article", ArticleRouter);
 
 // catch 404 and forward to error handlerauth
 app.use(function (req, res, next) {

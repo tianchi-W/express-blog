@@ -2,11 +2,11 @@ const { secretOrPrivateKey } = require("../utils/utils.js");
 const jwt = require("jsonwebtoken");
 const auth = async function (req, res, next) {
   if (req.get("Authorization")) {
+    console.log(req.get("Authorization"));
     let authorization = req.get("Authorization").split(" ")[1];
     try {
       jwt.verify(authorization, secretOrPrivateKey);
     } catch (error) {
-      console.log(error.name);
       if (error.name === "TokenExpiredError") {
         return res.send({ status: 400, message: "登录已过期，重新登录" });
       }

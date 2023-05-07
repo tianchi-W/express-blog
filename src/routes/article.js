@@ -6,23 +6,43 @@ var router = express.Router();
 
 // 获取文章列表
 router.get("/", async (req, res, next) => {
-  const article = await Article.find(deleteNull({ title: req.query?.title }));
+  const { title, sortByDate, skip, limit } = req.query;
+  const pageSize = 5;
+  const currentPage = 0;
+  const article = await Article.find(deleteNull({ title: req.query?.title }))
+    .sort({ date: sortByDate == "td" ? -1 : 1 })
+    .skip(skip ? skip : 0)
+    .limit(limit ? limit : pageSize);
+  const total = await Article.find(
+    deleteNull({ title: req.query?.title })
+  ).count();
+
   res.send({
     code: 200,
-    data: article,
+    // @ts-ignore
+    data: { total, article, limit: pageSize, current: +skip / limit + 1 },
   });
 });
 //通过id查询
 router.post("/info", async (req, res, next) => {
+  console.log(req.body, "req");
   const article = await Article.find({ _id: req.body._id });
   res.send({
     code: 200,
     data: article,
   });
 });
-
+//排序列表
+// router.post("/info", async (req, res, next) => {
+//   console.log(req.body, "req");
+//   const article = await Article.find({ _id: req.body._id });
+//   res.send({
+//     code: 200,
+//     data: article,
+//   });
+// });
 // 添加文章
-router.post("/", async (req, res, next) => {
+router.post("/", auth, async (req, res, next) => {
   const article = await Article.create({
     title: req.body.title,
     introduction: req.body.introduction,
@@ -38,7 +58,7 @@ router.post("/", async (req, res, next) => {
   res.send(article);
 });
 // 更新资源
-router.put("/", async (req, res) => {
+router.put("/", auth, async (req, res) => {
   const {
     _id,
     title,
@@ -68,7 +88,8 @@ router.put("/", async (req, res) => {
       click,
       comment,
       author,
-    }
+    },
+    { new: true }
   );
   res.send({
     code: 200,
@@ -76,10 +97,10 @@ router.put("/", async (req, res) => {
   });
 });
 // 文章删除
-router.delete("/", async (req, res) => {
+router.delete("/", auth, async (req, res) => {
   const article = await Article.deleteOne({ _id: req.body._id });
   res.send({
-    status: 200,
+    code: 200,
     data: article,
   });
 });

@@ -43,6 +43,7 @@ router.post("/register", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
+  console.log(req.body);
   /***jwt生成token***/
   let content = { username: username }; // 要生成token的主题信息
   let token = jwt.sign(content, secretOrPrivateKey, {
@@ -64,13 +65,14 @@ router.post("/login", async (req, res, next) => {
   if (user) {
     // @ts-ignore
     if (bcrypt.compareSync(password, user.password)) {
-      res.send({
-        code: 200,
-        msg: "登录成功",
-        token,
-      });
+      // res.send({
+      //   code: 200,
+      //   msg: "登录成功",
+      //   token,
+      // });
+      responseClient(res, 200, 3, "登录成功", { token, username });
     } else {
-      responseClient(res, 500, 3, "密码错误");
+      responseClient(res, 300, 3, "密码错误");
     }
   } else {
     responseClient(res, 500, 3, "用户不存在");
@@ -81,11 +83,14 @@ router.post("/login", async (req, res, next) => {
 router.get("/getInfo", async (req, res, next) => {
   // 下面这行代码是随机生成验证码图片和文本并返回给客户端
   const img = svgCaptcha.create({
-    size: 6, // 验证码长度
+    size: 4, // 验证码长度
     ignoreChars: "0o1i", // 验证码字符中排除 0o1i
     color: true, // 验证码是否有彩色
     noise: 1, //干扰线
     background: "#666", // 背景颜色
+    height: 40,
+    inverse: false,
+    fontSize: 40,
   });
   res.send(img);
 });

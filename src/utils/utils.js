@@ -13,7 +13,12 @@ module.exports = {
     responseData.code = code;
     responseData.message = message;
     responseData.data = data;
-    res.status(httpCode).json(responseData);
+    // res.status(httpCode).json(responseData);
+    res.send({
+      code: httpCode,
+      message: message,
+      data: data,
+    });
   },
   // 时间 格式化成 2018-12-12 12:12:00
   timestampToTime(timestamp) {
