@@ -23,6 +23,18 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  openid: {
+    type: String,
+    unique: true,
+  },
+  isWx: {
+    type: Boolean,
+    default: false,
+  },
+  session_key: {
+    type: String,
+    unique: true,
+  },
 });
 
 // 建立用户数据库模型

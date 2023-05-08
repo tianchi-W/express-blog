@@ -24,7 +24,7 @@ router.get("/", async (req, res, next) => {
   });
 });
 //通过id查询
-router.post("/info", async (req, res, next) => {
+router.post("/info", auth, async (req, res, next) => {
   console.log(req.body, "req");
   const article = await Article.find({ _id: req.body._id });
   res.send({
