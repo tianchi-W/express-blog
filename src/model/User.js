@@ -35,6 +35,18 @@ const UserSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  avatar: {
+    type: String,
+    default: "https://web-assets.dcloud.net.cn/unidoc/zh/unicloudlogo.png",
+  },
+  sex: {
+    type: String,
+    default: "0",
+  },
+  age: {
+    type: String,
+    default: "",
+  },
 });
 
 // 建立用户数据库模型
