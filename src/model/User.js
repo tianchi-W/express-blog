@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: true,
+    sparse: true, //稀疏索引，微信用户username可能为空
   },
   password: {
     type: String,

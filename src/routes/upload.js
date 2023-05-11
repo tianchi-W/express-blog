@@ -1,6 +1,7 @@
 const multer = require("multer"); // npm install multer 文件上传中间件
 var express = require("express");
 var router = express.Router();
+const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
 // 七牛云模块
 const qiniu = require("qiniu");
 const fs = require("fs");
@@ -45,16 +46,14 @@ router.post(
       localFile,
       putExtra,
       function (respErr, respBody, respInfo) {
+        console.log(respInfo, respBody, "resp");
         if (respErr) {
           throw respErr;
         }
         if (respInfo.statusCode == 200) {
-          res.json({
-            status: "200",
-            result: {
-              path: baseUrl + respBody.key,
-            },
-            msg: "ok",
+          console.log(333);
+          responseClient(res, 200, 3, "上传成功", {
+            url: baseUrl + respBody.key,
           });
         } else {
           console.log(respInfo, "k");
@@ -63,6 +62,7 @@ router.post(
             result: {},
             msg: "上传失败",
           });
+          responseClient(res, -1, 3, "上传失败");
         }
         fs.unlinkSync(path);
       }

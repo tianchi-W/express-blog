@@ -6,44 +6,15 @@ const jwt = require("jsonwebtoken");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
 const svgCaptcha = require("svg-captcha");
 var request = require("request");
+const auth = require("../middleware/auth.js");
 
 //小程序信息
 const config = {
   appid: "wx6946435a64110647",
   secret: "72cd1ed5ffa49563d2492d8b10c5ee9c",
 };
-//生成token
-function createToken() {
-  const chars =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-  const length = chars.length;
-
-  let str = "";
-
-  for (let i = 0; i < length; i++) {
-    str += chars.substr(Math.round(Math.random() * length), 1);
-  }
-
-  return str;
-}
 router.get("/wxlogin", function (req, res, next) {
-  // var nickname = req.query.nickName;
-
-  // var head_img = req.query.head_img;
-
-  // var code = req.query.code;
-
-  // var param = {};
-
-  // param.nickname = nickname;
-
-  // param.head_img = head_img;
-
-  // param.code = code;
-
-  // param.creatAt = moment().format("YYYY-MM-DD HH:mm:ss");
-  console.log(req.query);
   request.get(
     {
       url: "https://api.weixin.qq.com/sns/jscode2session",
@@ -68,8 +39,6 @@ router.get("/wxlogin", function (req, res, next) {
             openid: data.openid,
           }).then(function (info) {
             if (info) {
-              console.log(info);
-              console.info("用户已经存在");
               User.findByIdAndUpdate(
                 { _id: info._id },
                 { session_key: data.session_key }
@@ -77,34 +46,31 @@ router.get("/wxlogin", function (req, res, next) {
                 /***jwt生成token***/
                 let content = { _id: r?._id }; // 要生成token的主题信息
                 let token = jwt.sign(content, secretOrPrivateKey, {
-                  expiresIn: 60, // 一周过期
+                  expiresIn: 7 * 24 * 60 * 60, // 一周过期
                 });
 
-                responseClient(res, 200, 3, "登录成功", { _id: r?._id, token });
+                responseClient(res, 200, 3, "登录成功", {
+                  _id: r?._id,
+                  token,
+                });
               });
-              // console.info(info.token);
-
-              // return res.send(token);
             } else {
               const user = User.create({
                 openid: data.openid,
                 isWx: true,
                 session_key: data.session_key,
               }).then((r) => {
-                console.log(r);
-                responseClient(res, 200, 3, "第一次登录成功", { _id: r._id });
+                /***jwt生成token***/
+                let content = { _id: r?._id }; // 要生成token的主题信息
+                let token = jwt.sign(content, secretOrPrivateKey, {
+                  expiresIn: 7 * 24 * 60 * 60, // 一周过期
+                });
+
+                responseClient(res, 200, 3, "登录成功", {
+                  _id: r?._id,
+                  token,
+                });
               });
-              // var user = new User({
-              //   openid: data.openid,
-
-              //   nickName: param.nickname,
-
-              //   avatarUrl: param.head_img,
-
-              //   creatAt: param.creatAt,
-
-              //   token: createToken(),
-              // });
             }
           });
         }
@@ -116,10 +82,45 @@ router.get("/wxlogin", function (req, res, next) {
     }
   );
 });
+// 用户普通信息修改
 
+router.put("/", auth, async (req, res) => {
+  const { _id, username, updateTime, isWx, avatar, age, sex } = req.body;
+  //   console.log(req);
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      {
+        _id,
+      },
+      {
+        username,
+        updateTime,
+        isWx,
+        avatar,
+        age,
+        sex,
+      },
+      { new: true }
+    );
+    responseClient(res, 200, 3, "更新成功", {
+      username: user?.username,
+      avatar: user?.avatar,
+      age: user?.age,
+    });
+  } catch (error) {
+    responseClient(res, error.code, 3, error.codeName, {
+      keyValue: `${error.keyValue.username}已经存在了`,
+    });
+    console.log(error.code, "code");
+  }
+});
 /* GET users listing. */
-router.get("/", function (req, res, next) {
-  res.send("respond with a resource");
+router.get("/", auth, async function (req, res, next) {
+  console.log(req.query, "req");
+  const user = await User.find({ _id: req.query._id });
+  console.log(user, "user");
+  responseClient(res, 200, 3, "", user);
 });
 
 // 用户注册

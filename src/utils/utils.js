@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 module.exports = {
-  secretOrPrivateKey: "This is perfect projects.", // 这是加密的key（密钥） 根据个人自定义
+  secretOrPrivateKey: "This is perfect projects.", // 这是加密的key（密钥）
   // 响应客户端
   responseClient(
     res,
