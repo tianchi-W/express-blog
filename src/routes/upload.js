@@ -1,7 +1,7 @@
 const multer = require("multer"); // npm install multer 文件上传中间件
 var express = require("express");
 var router = express.Router();
-const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
+const { responseClient } = require("../utils/utils.js");
 // 七牛云模块
 const qiniu = require("qiniu");
 const fs = require("fs");
@@ -51,7 +51,6 @@ router.post(
           throw respErr;
         }
         if (respInfo.statusCode == 200) {
-          console.log(333);
           responseClient(res, 200, 3, "上传成功", {
             url: baseUrl + respBody.key,
           });

@@ -23,6 +23,7 @@ const ArticleSchema = new mongoose.Schema({
   comment: { type: String },
   //作者
   author: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
+  username: { type: String },
 });
 //导出model模块
 // 建立用户数据库模型

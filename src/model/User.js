@@ -48,6 +48,19 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  article_ids: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        default: "Article",
+      },
+    ],
+    default: [],
+  },
+  //  {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   default: 'Article',
+  // },
 });
 
 // 建立用户数据库模型
