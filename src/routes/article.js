@@ -19,19 +19,21 @@ router.get("/", async (req, res, next) => {
   const total = await Article.find(
     deleteNull({ title: req.query?.title })
   ).count();
-  responseClient(res, 200, 3, "查询成功", {
-    total,
-    article,
-    limit: pageSize,
-    current: +skip / limit + 1,
-  });
-  // res.send({
-  //   code: 200,
-  //   // @ts-ignore
-  //   data: { total, article, limit: pageSize, current: +skip / limit + 1 },
+  console.log(article, "article");
+  // responseClient(res, 200, 3, "查询成功", {
+  //   total,
+  //   article,
+  //   limit: pageSize,
+  //   current: +skip / limit + 1,
   // });
+  res.send({
+    code: 200,
+    // @ts-ignore
+    data: { total, article, limit: pageSize, current: +skip / limit + 1 },
+  });
 });
 //通过id查询
+
 router.post("/info", auth, async (req, res, next) => {
   const article = await Article.find({ _id: req.body._id });
   res.send({

@@ -122,6 +122,12 @@ router.get("/", auth, async function (req, res, next) {
   console.log(user, "user");
   responseClient(res, 200, 3, "", user);
 });
+router.get("/list", auth, async function (req, res, next) {
+  console.log(req.query, "req");
+  const user = await User.find();
+  console.log(user, "user");
+  responseClient(res, 200, 3, "", user);
+});
 
 // 用户注册
 router.post("/register", async (req, res, next) => {
@@ -182,7 +188,7 @@ router.post("/login", async (req, res, next) => {
       //   msg: "登录成功",
       //   token,
       // });
-      responseClient(res, 200, 3, "登录成功", { token, username });
+      responseClient(res, 200, 3, "登录成功", { token, username, user });
     } else {
       responseClient(res, 300, 3, "密码错误");
     }
