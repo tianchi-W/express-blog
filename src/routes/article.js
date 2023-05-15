@@ -65,8 +65,6 @@ router.post("/", auth, async (req, res, next) => {
     },
     { new: true }
   );
-  console.log(userId, "id");
-  console.log(req.decoded, "decoded");
   await User.updateOne(
     {
       _id: userId._id,
@@ -76,8 +74,6 @@ router.post("/", auth, async (req, res, next) => {
         article_ids: article._id,
       },
     }
-
-    // { article_ids: [{ _id: "6457b0569ce43ef3e8f4093a" }] }
   );
   responseClient(res, 200, 3, "添加成功", {
     article,
