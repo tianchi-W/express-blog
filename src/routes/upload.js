@@ -23,7 +23,6 @@ config.useCdnDomain = true;
 const baseUrl = "http://rudxzhmj6.bkt.clouddn.com/"; //七牛云空间访问的域名
 //七牛云 - 对象存储 - 图片上传
 // 上传图片
-console.log("fdkl");
 router.post(
   "/qiniu_upload",
   multer({ dest: "./public/img/" }).array("file", 1),

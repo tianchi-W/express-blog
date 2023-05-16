@@ -11,10 +11,10 @@ const ArticleSchema = new mongoose.Schema({
   body: { type: String },
   //html
   content: { type: String },
-  //所含标签
+  //所含标签的对象集合
   tags: { type: Array },
-  //标签id
-  tagid: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Tag" }],
+  //标签的title
+  tagtitle: { type: Array },
   //更新日期
   date: { type: String },
   //点击量
@@ -22,8 +22,9 @@ const ArticleSchema = new mongoose.Schema({
   //评论数量
   comment: { type: String },
   //作者
-  author: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
+  // author: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
   username: { type: String },
+  author: { type: String },
 });
 //导出model模块
 // 建立用户数据库模型

@@ -1,6 +1,7 @@
 var express = require("express");
-const { Article } = require("../model/article");
+const { Article } = require("../model/Article");
 const { User } = require("../model/User");
+const { Tag } = require("../model/Tag");
 const { deleteNull } = require("../utils/handleObj.js");
 const auth = require("../middleware/auth.js");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
@@ -19,7 +20,6 @@ router.get("/", async (req, res, next) => {
   const total = await Article.find(
     deleteNull({ title: req.query?.title })
   ).count();
-  console.log(article, "article");
   // responseClient(res, 200, 3, "查询成功", {
   //   total,
   //   article,
@@ -42,29 +42,35 @@ router.post("/info", auth, async (req, res, next) => {
   });
 });
 
+function handleTag(params) {
+  return params.map((item) => {
+    return item.title;
+  });
+}
 // 添加文章
 router.post("/", auth, async (req, res, next) => {
+  // const tag = handleTag(req.body.tagtitle).map(async (item) => {
+  //   return await Tag.findOne({ title: item.title });
+  // });
+
+  // try {
   const userId = await User.findOne(
     { username: req.decoded.username },
     { new: true }
   );
-  console.log(userId, "userId");
-  const article = await Article.create(
-    {
-      title: req.body.title,
-      introduction: req.body.introduction,
-      body: req.body.body,
-      content: req.body.content,
-      tags: req.body.tags,
-      tagid: req.body.tagid,
-      date: req.body.date,
-      click: req.body.click,
-      comment: req.body.comment,
-      author: userId._id,
-      username: req.decoded.username,
-    },
-    { new: true }
-  );
+  const tag = await Tag.find().where("title").in(req.body.tagtitle.split(","));
+  const article = await Article.create({
+    title: req.body.title,
+    introduction: req.body.introduction,
+    body: req.body.body,
+    content: req.body.content,
+    tags: tag,
+    tagtitle: handleTag(tag),
+    date: req.body.date,
+    click: req.body.click,
+    comment: req.body.comment,
+    author: req.decoded.username,
+  });
   await User.updateOne(
     {
       _id: userId._id,
@@ -78,45 +84,51 @@ router.post("/", auth, async (req, res, next) => {
   responseClient(res, 200, 3, "添加成功", {
     article,
   });
+  // } catch (error) {}
 });
 // 更新资源
 router.put("/", auth, async (req, res) => {
-  const {
-    _id,
-    title,
-    introduction,
-    body,
-    content,
-    tags,
-    tagid,
-    data,
-    click,
-    comment,
-    author,
-  } = req.body;
-  //   console.log(req);
-  const article = await Article.findByIdAndUpdate(
-    {
+  try {
+    const tag = await Tag.find()
+      .where("title")
+      .in(req.body.tagtitle.split(","));
+    const {
       _id,
-    },
-    {
       title,
       introduction,
       body,
       content,
       tags,
-      tagid,
+      tagtitle,
       data,
       click,
       comment,
-      author,
-    },
-    { new: true }
-  );
-  res.send({
-    code: 200,
-    data: article,
-  });
+    } = req.body;
+
+    const article = await Article.findByIdAndUpdate(
+      {
+        _id,
+      },
+      {
+        title,
+        introduction,
+        body,
+        content,
+        tags,
+        tagtitle: handleTag(tag),
+        data,
+        click,
+        comment,
+      },
+      { new: true }
+    );
+    res.send({
+      code: 200,
+      data: article,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 // 文章删除
 router.delete("/", auth, async (req, res) => {
