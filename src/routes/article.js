@@ -2,6 +2,7 @@ var express = require("express");
 const { Article } = require("../model/Article");
 const { User } = require("../model/User");
 const { Tag } = require("../model/Tag");
+const { Classify } = require("../model/Classify");
 const { deleteNull } = require("../utils/handleObj.js");
 const auth = require("../middleware/auth.js");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
@@ -49,52 +50,64 @@ function handleTag(params) {
 }
 // 添加文章
 router.post("/", auth, async (req, res, next) => {
-  // const tag = handleTag(req.body.tagtitle).map(async (item) => {
-  //   return await Tag.findOne({ title: item.title });
-  // });
-
-  // try {
-  const userId = await User.findOne(
-    { username: req.decoded.username },
-    { new: true }
-  );
-  const tag = await Tag.find().where("title").in(req.body.tagtitle.split(","));
-  const article = await Article.create({
-    title: req.body.title,
-    introduction: req.body.introduction,
-    body: req.body.body,
-    content: req.body.content,
-    tags: tag,
-    tagtitle: handleTag(tag),
-    date: req.body.date,
-    click: req.body.click,
-    comment: req.body.comment,
-    author: req.decoded.username,
-  });
-  await User.updateOne(
-    {
-      _id: userId._id,
-    },
-    {
-      $push: {
-        article_ids: article._id,
+  try {
+    const userId = await User.findOne(
+      { username: req.decoded.username },
+      { new: true }
+    );
+    const tag = await Tag.find()
+      .where("title")
+      .in(req.body.tagtitle.split(","));
+    const classify = await Classify.find({ title: req.body.classifyname })
+      .where("title")
+      .in(req.body.classifyname);
+    const article = await Article.create({
+      title: req.body.title,
+      introduction: req.body.introduction,
+      body: req.body.body,
+      content: req.body.content,
+      tags: tag,
+      classifyid: classify[0]._id,
+      classifyname: classify[0].title,
+      tagtitle: handleTag(tag),
+      date: req.body.date,
+      click: req.body.click,
+      comment: req.body.comment,
+      author: req.decoded.username,
+    });
+    await User.updateOne(
+      {
+        _id: userId._id,
       },
-    }
-  );
-  responseClient(res, 200, 3, "添加成功", {
-    article,
-  });
-  // } catch (error) {}
+      {
+        $push: {
+          article_ids: article._id,
+        },
+      }
+    );
+    responseClient(res, 200, 3, "添加成功", {
+      article,
+    });
+  } catch (error) {}
 });
 // 更新资源
 router.put("/", auth, async (req, res) => {
   try {
-    const tag = await Tag.find()
-      .where("title")
-      .in(req.body.tagtitle.split(","));
-    const { _id, title, introduction, body, content, data, click, comment } =
-      req.body;
-
+    const {
+      _id,
+      title,
+      introduction,
+      body,
+      content,
+      classifyname,
+      data,
+      click,
+      tagtitle,
+      comment,
+    } = req.body;
+    const tag = await Tag.find().where("title").in(tagtitle.split(","));
+    const classify = await Classify.find({ title: classifyname });
+    console.log(classify, classifyname, "classify");
     const article = await Article.findByIdAndUpdate(
       {
         _id,
@@ -107,6 +120,8 @@ router.put("/", auth, async (req, res) => {
         tags: tag,
         tagtitle: handleTag(tag),
         data,
+        classifyid: classify[0]._id,
+        classifyname: classify[0].title,
         click,
         comment,
       },

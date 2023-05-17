@@ -1,22 +1,23 @@
-var createError = require("http-errors");
-var express = require("express");
+const createError = require("http-errors");
+const express = require("express");
 
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
 
-var indexRouter = require("./src/routes/index");
-var usersRouter = require("./src/routes/users");
-var ArticleRouter = require("./src/routes/article");
-var uploadRouter = require("./src/routes/upload");
-var tagsRouter = require("./src/routes/tag");
+const indexRouter = require("./src/routes/index");
+const usersRouter = require("./src/routes/users");
+const ArticleRouter = require("./src/routes/article");
+const uploadRouter = require("./src/routes/upload");
+const tagsRouter = require("./src/routes/tag");
+const classifyRouter = require("./src/routes/classify");
 
 const cors = require("cors");
 // const auth = require("./src/middleware/auth");
 
 // ​
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -50,7 +51,8 @@ app.use("/users", usersRouter);
 app.use("/article", ArticleRouter);
 app.use("/upload", uploadRouter);
 app.use("/tag", tagsRouter);
-// catch 404 and forward to error handlerauth
+app.use("/classify", classifyRouter);
+//404
 app.use(function (req, res, next) {
   next(createError(404));
 });

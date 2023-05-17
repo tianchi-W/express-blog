@@ -21,6 +21,8 @@ const ArticleSchema = new mongoose.Schema({
   click: { type: Number },
   //评论数量
   comment: { type: String },
+  classifyid: { type: mongoose.SchemaTypes.ObjectId, ref: "Classify" },
+  classifyname: { type: String },
   //作者
   // author: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
   username: { type: String },
