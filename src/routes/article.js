@@ -92,18 +92,8 @@ router.put("/", auth, async (req, res) => {
     const tag = await Tag.find()
       .where("title")
       .in(req.body.tagtitle.split(","));
-    const {
-      _id,
-      title,
-      introduction,
-      body,
-      content,
-      tags,
-      tagtitle,
-      data,
-      click,
-      comment,
-    } = req.body;
+    const { _id, title, introduction, body, content, data, click, comment } =
+      req.body;
 
     const article = await Article.findByIdAndUpdate(
       {
@@ -114,7 +104,7 @@ router.put("/", auth, async (req, res) => {
         introduction,
         body,
         content,
-        tags,
+        tags: tag,
         tagtitle: handleTag(tag),
         data,
         click,
