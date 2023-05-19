@@ -17,6 +17,7 @@ const ArticleSchema = new mongoose.Schema({
   tagtitle: { type: Array },
   //更新日期
   date: { type: String },
+  pic: { type: String },
   //点击量
   click: { type: Number },
   //评论数量

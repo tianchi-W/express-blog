@@ -45,7 +45,7 @@ app.all("*", function (req, res, next) {
     res.sendStatus(200); //让options尝试请求快速结束
   else next();
 });
-
+app.disable("etag");
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/article", ArticleRouter);

@@ -1,8 +1,10 @@
 var express = require("express");
 var router = express.Router();
 const { Classify } = require("../model/Classify");
+const { Article } = require("../model/Article");
 const auth = require("../middleware/auth.js");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
+const { default: mongoose } = require("mongoose");
 
 /* 添加. */
 router.post("/", async function (req, res, next) {
@@ -52,6 +54,7 @@ router.put("/", async function (req, res, next) {
     },
     { new: true }
   );
+
   responseClient(res, 200, 3, " 更新成功", {
     classify,
   });
@@ -59,8 +62,24 @@ router.put("/", async function (req, res, next) {
 
 // 删除
 router.delete("/", auth, async (req, res) => {
+  try {
+    console.log(req.body._id, "fdk");
+    const res = await Article.updateMany(
+      {
+        classifyid: req.body._id,
+      },
+      //更新为默认分类
+      {
+        classifyid: new mongoose.Types.ObjectId("646729ab31537aab6352b27e"),
+        classifyname: "编程",
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
   const classify = await Classify.deleteOne({ _id: req.body._id });
-  responseClient(res, 200, 3, " 更新成功", {
+
+  responseClient(res, 200, 3, " 删除成功", {
     classify,
   });
 });

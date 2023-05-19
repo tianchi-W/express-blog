@@ -6,6 +6,7 @@ const { Classify } = require("../model/Classify");
 const { deleteNull } = require("../utils/handleObj.js");
 const auth = require("../middleware/auth.js");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
+const { default: mongoose } = require("mongoose");
 var router = express.Router();
 
 // 获取文章列表
@@ -67,7 +68,8 @@ router.post("/", auth, async (req, res, next) => {
       body: req.body.body,
       content: req.body.content,
       tags: tag,
-      classifyid: classify[0]._id,
+      pic: req.body.pic,
+      classifyid: new mongoose.Types.ObjectId(classify[0]._id),
       classifyname: classify[0].title,
       tagtitle: handleTag(tag),
       date: req.body.date,
@@ -101,6 +103,7 @@ router.put("/", auth, async (req, res) => {
       content,
       classifyname,
       data,
+      pic,
       click,
       tagtitle,
       comment,
@@ -120,7 +123,8 @@ router.put("/", auth, async (req, res) => {
         tags: tag,
         tagtitle: handleTag(tag),
         data,
-        classifyid: classify[0]._id,
+        pic,
+        classifyid: new mongoose.Types.ObjectId(classify[0]._id),
         classifyname: classify[0].title,
         click,
         comment,
