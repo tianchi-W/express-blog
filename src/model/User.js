@@ -1,6 +1,6 @@
 // 引入mongodb
 const mongoose = require("../db/mongodb");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
 // 建立用户表
 const UserSchema = new mongoose.Schema({

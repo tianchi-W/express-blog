@@ -15,12 +15,17 @@ router.get("/", async (req, res, next) => {
   const pageSize = 5;
   const currentPage = 0;
 
-  const article = await Article.find(deleteNull({ title: req.query?.title }))
+  const article = await Article.find(
+    deleteNull({
+      title: req.query?.title,
+      classifyid: req.query.classifyid,
+    })
+  )
     .sort({ date: sortByDate == "td" ? -1 : 1 })
     .skip(skip ? skip : 0)
     .limit(limit ? limit : pageSize);
   const total = await Article.find(
-    deleteNull({ title: req.query?.title })
+    deleteNull({ title: req.query?.title, classifyid: req.query.classifyid })
   ).count();
   // responseClient(res, 200, 3, "查询成功", {
   //   total,
@@ -28,6 +33,7 @@ router.get("/", async (req, res, next) => {
   //   limit: pageSize,
   //   current: +skip / limit + 1,
   // });
+
   res.send({
     code: 200,
     // @ts-ignore
