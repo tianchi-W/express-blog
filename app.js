@@ -11,7 +11,8 @@ const ArticleRouter = require("./src/routes/article");
 const uploadRouter = require("./src/routes/upload");
 const tagsRouter = require("./src/routes/tag");
 const classifyRouter = require("./src/routes/classify");
-
+const rolesRouter = require("./src/routes/roles");
+const permissionRouter = require("./src/routes/permission");
 const cors = require("cors");
 // const auth = require("./src/middleware/auth");
 
@@ -51,7 +52,9 @@ app.use("/users", usersRouter);
 app.use("/article", ArticleRouter);
 app.use("/upload", uploadRouter);
 app.use("/tag", tagsRouter);
+app.use("/roles", rolesRouter);
 app.use("/classify", classifyRouter);
+app.use("/permission", permissionRouter);
 //404
 app.use(function (req, res, next) {
   next(createError(404));

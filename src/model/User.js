@@ -6,8 +6,6 @@ var salt = bcrypt.genSaltSync(10);
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: true,
-    sparse: true, //稀疏索引，微信用户username可能为空
   },
   password: {
     type: String,
@@ -26,7 +24,6 @@ const UserSchema = new mongoose.Schema({
   },
   openid: {
     type: String,
-    unique: true,
   },
   isWx: {
     type: Boolean,
@@ -34,7 +31,6 @@ const UserSchema = new mongoose.Schema({
   },
   session_key: {
     type: String,
-    unique: true,
   },
   avatar: {
     type: String,
@@ -57,10 +53,8 @@ const UserSchema = new mongoose.Schema({
     ],
     default: [],
   },
-  //  {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   default: 'Article',
-  // },
+  roleid: { type: String },
+  rolename: { type: String },
 });
 
 // 建立用户数据库模型

@@ -23,11 +23,8 @@ router.get("/wxlogin", function (req, res, next) {
 
       qs: {
         grant_type: "authorization_code",
-
         appid: config.appid,
-
         secret: config.secret,
-
         js_code: req.query.code,
       },
     },
@@ -142,18 +139,22 @@ router.post("/register", async (req, res, next) => {
     res.send({ code: 500, message: "用户名密码不能为空" });
     return;
   }
-  const isRepeat = await User.findOne({ username });
+  try {
+    const isRepeat = await User.findOne({ username });
 
-  if (isRepeat) {
-    responseClient(res, 500, 3, "用户已经注册过了");
-  } else {
-    const user = await User.create({
-      username,
-      password,
-    });
-    user
-      ? responseClient(res, 200, 3, "注册成功")
-      : responseClient(res, 500, 3, "注册失败");
+    if (isRepeat) {
+      responseClient(res, 500, 3, "用户已经注册过了");
+    } else {
+      const user = await User.create({
+        username,
+        password,
+      });
+      user
+        ? responseClient(res, 200, 3, "注册成功")
+        : responseClient(res, 500, 3, "注册失败");
+    }
+  } catch (error) {
+    console.log(error, "error");
   }
 });
 //
