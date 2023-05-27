@@ -184,11 +184,6 @@ router.post("/login", async (req, res, next) => {
   if (user) {
     // @ts-ignore
     if (bcrypt.compareSync(password, user.password)) {
-      // res.send({
-      //   code: 200,
-      //   msg: "登录成功",
-      //   token,
-      // });
       responseClient(res, 200, 3, "登录成功", { token, username, user });
     } else {
       responseClient(res, 300, 3, "密码错误");

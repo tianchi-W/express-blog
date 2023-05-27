@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const { Role } = require("../model/Role");
+const { Permission } = require("../model/Permission");
 const auth = require("../middleware/auth.js");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
 
@@ -19,12 +20,17 @@ router.post("/", async function (req, res, next) {
 /* 编辑权限
  */ router.post("/add", async function (req, res, next) {
   const { name, permissionNames } = req.body;
+  const permissionId = await Permission.find()
+    .where("name")
+    .in(permissionNames.split(","));
+  console.log(permissionId, "fkdfkdl");
   try {
     const isRepeat = await Role.find({ name });
     if (isRepeat) {
       const role = await Role.create({
         name,
-        permissionNames,
+        permissionNames: permissionNames.split(","),
+        permission: permissionId,
       });
       responseClient(res, 200, 3, " 添加成功", {
         role,
@@ -34,7 +40,8 @@ router.post("/", async function (req, res, next) {
         { _id: isRepeat._id },
         {
           name,
-          permissionNames,
+          permissionNames: permissionNames.split(","),
+          permission: permissionId,
         }
       );
       responseClient(res, 200, 3, " 添加成功", {
@@ -42,7 +49,7 @@ router.post("/", async function (req, res, next) {
       });
     }
   } catch (error) {
-    responseClient(res, 200, 3, error.keyValue.title, error);
+    responseClient(res, 200, 3, error, error);
   }
 });
 

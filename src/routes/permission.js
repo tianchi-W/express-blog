@@ -17,7 +17,7 @@ router.post("/", async function (req, res, next) {
 
 /* 编辑权限
  */ router.post("/add", async function (req, res, next) {
-  const { type, pid, name, path } = req.body;
+  const { type, pid, name, path, icon } = req.body;
   try {
     const isRepeat = await Permission.find({ name });
     if (isRepeat) {
@@ -26,6 +26,7 @@ router.post("/", async function (req, res, next) {
         type,
         pid,
         path,
+        icon,
       });
       responseClient(res, 200, 3, " 添加成功", {
         permission,
@@ -38,6 +39,7 @@ router.post("/", async function (req, res, next) {
           type,
           pid,
           path,
+          icon,
         }
       );
       responseClient(res, 200, 3, " 添加成功", {
@@ -45,8 +47,19 @@ router.post("/", async function (req, res, next) {
       });
     }
   } catch (error) {
-    responseClient(res, 200, 3, error.keyValue.title, error);
+    responseClient(res, 200, 3, error, error);
   }
+});
+
+// 获取pid根据type
+router.get("/getpidbytype", async function (req, res, next) {
+  const { type } = req.query;
+  try {
+    const pid = await Permission.find({ type: type ? +type : type });
+    responseClient(res, 200, 3, " 查询成功", {
+      pid,
+    });
+  } catch (error) {}
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@ const mongoose = require("../db/mongodb");
 const PermissionSchema = new mongoose.Schema({
   name: { type: String, unique: true, require },
   type: { type: String }, //一级菜单 二级菜单
-  pid: { type: Number }, //父级
+  pid: { type: String }, //父级
   path: { type: String },
   icon: { type: String },
 });

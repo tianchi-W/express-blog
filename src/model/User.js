@@ -36,6 +36,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "https://web-assets.dcloud.net.cn/unidoc/zh/unicloudlogo.png",
   },
+  role: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: "64719553d70880df069970c2",
+  },
   sex: {
     type: String,
     default: "0",
