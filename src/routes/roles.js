@@ -16,7 +16,13 @@ router.post("/", async function (req, res, next) {
     console.log(error);
   }
 });
-
+//获取权限通过id
+router.post("/info", async function (req, res, next) {
+  const role = await Role.find({ _id: req.body._id });
+  responseClient(res, 200, 3, " 数据获取成功", {
+    role,
+  });
+});
 /* 编辑权限
  */ router.post("/add", async function (req, res, next) {
   const { name, permissionNames } = req.body;
@@ -26,7 +32,7 @@ router.post("/", async function (req, res, next) {
   console.log(permissionId, "fkdfkdl");
   try {
     const isRepeat = await Role.find({ name });
-    if (isRepeat) {
+    if (!isRepeat.length) {
       const role = await Role.create({
         name,
         permissionNames: permissionNames.split(","),
@@ -37,7 +43,7 @@ router.post("/", async function (req, res, next) {
       });
     } else {
       const role = await Role.findByIdAndUpdate(
-        { _id: isRepeat._id },
+        { _id: isRepeat[0]._id },
         {
           name,
           permissionNames: permissionNames.split(","),

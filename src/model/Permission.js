@@ -6,6 +6,9 @@ const PermissionSchema = new mongoose.Schema({
   pid: { type: String }, //父级
   path: { type: String },
   icon: { type: String },
+  component: { type: String },
+  title: { type: String },
+  redirect: { type: String },
 });
 //导出model模块
 // 建立用户数据库模型

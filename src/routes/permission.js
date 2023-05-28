@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const { Permission } = require("../model/Permission");
+const { Role } = require("../model/Role");
+
 const auth = require("../middleware/auth.js");
 const { secretOrPrivateKey, responseClient } = require("../utils/utils.js");
 
@@ -17,29 +19,35 @@ router.post("/", async function (req, res, next) {
 
 /* 编辑权限
  */ router.post("/add", async function (req, res, next) {
-  const { type, pid, name, path, icon } = req.body;
+  const { type, pid, name, path, icon, component, title, redirect } = req.body;
   try {
     const isRepeat = await Permission.find({ name });
-    if (isRepeat) {
+    if (!isRepeat.length) {
       const permission = await Permission.create({
         name,
         type,
         pid,
         path,
         icon,
+        component,
+        title,
+        redirect,
       });
       responseClient(res, 200, 3, " 添加成功", {
         permission,
       });
     } else {
       const permission = await Permission.findByIdAndUpdate(
-        { _id: isRepeat._id },
+        { _id: isRepeat[0]._id },
         {
           name,
           type,
           pid,
           path,
           icon,
+          component,
+          title,
+          redirect,
         }
       );
       responseClient(res, 200, 3, " 添加成功", {
