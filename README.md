@@ -47,6 +47,7 @@
 > 项目预览：http://13.231.127.205
 
 > vue3+element-plus+hooks+vite4+ts
+> 预览账号：mongodb 密码：123456
 
 - [x] 文章增删改查接口
 - [x] 用户登录注册接口
