@@ -25,6 +25,7 @@
 
 ![7417edf93fdfacca7f1145ca3fbfd3b](http://rudxzhmj6.bkt.clouddn.com//pic/7417edf93fdfacca7f1145ca3fbfd3b.jpg)
 
+> 仓库地址:https://github.com/tianchi-W/uni-blog-wx/tree/dev
 > uniapp+vue3+hooks+ts（由于后台接口域名还备案还没通过 😓，小程序中没有数据，暂时只能在测试版看效果 😹）
 
 - [x] 文章增删改查接口
@@ -41,7 +42,9 @@
 
 ### 后台管理系统
 
-http://13.231.127.205
+> 项目仓库：https://github.com/tianchi-W/blog-admin
+
+> 项目预览：http://13.231.127.205
 
 > vue3+element-plus+hooks+vite4+ts
 
