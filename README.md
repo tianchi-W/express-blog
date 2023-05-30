@@ -4,7 +4,7 @@
 
 > expresssjs+mongodb
 
-> 使用 express 搭建项目，mongodb 做数据库，使用https://railway.app/dashboard存放数据库，七牛云作为图床实现上传功能，使用中间件实现不同功能
+> 使用 express 搭建项目，mongodb 做数据库，使用 https://railway.app/dashboard 存放数据库，七牛云作为图床实现上传功能，使用中间件实现不同功能
 
 - [x] 文章增删改查接口
 - [x] 用户信息处理接口
